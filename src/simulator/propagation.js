@@ -2,10 +2,7 @@
  * Implements the event-driven BFS signal propagation algorithm.
  * When an input changes, this module propagates that change
  * through the circuit until steady state is reached.
- *
- * LOOKUP STRATEGY: Array.find() — O(n) per lookup.
- * Simple and readable. Suitable for Phase 1-3 circuit sizes.
- * Can be upgraded to Map version in Phase 5 if performance is needed.
+ * LOOKUP STRATEGY: Map.get() — O(1) per lookup.
  */
 
 import { evaluateGate } from './gateLogic'
@@ -13,23 +10,28 @@ import { evaluateGate } from './gateLogic'
 const MAX_ITERATIONS = 1000
 
 /**
+ * Converts gates array into a Map for O(1) lookups.
+ * @param {Object[]} gates - Array of gate objects
+ * @returns {Map} - Map of gateId → gate object
+ */
+export function buildGateMap(gates) {
+  const map = new Map()
+  gates.forEach(gate => map.set(gate.id, gate))
+  return map
+}
+
+/**
  * Propagates signal changes through the circuit using BFS.
- *
- * NOTE ON visited Set:
- * Correctly prevents infinite loops in combinational circuits (Phases 1-3).
- * Will be refactored in Phase 4 for sequential feedback circuits.
- *
- * NOTE ON shouldPropagate:
- * startGateId always propagates to connected gates regardless of whether
- * its own output changed. This fixes the stale initial state bug where
- * a gate's output may not match its inputs on first load.
- *
  * @param {Object} circuit - The current circuit state
  * @param {string} startGateId - ID of the gate whose output just changed
  * @returns {Object} - Updated circuit state with new output values
  */
 export function propagate(circuit, startGateId) {
   const updatedGates = deepCopyGates(circuit.gates)
+
+  // Build Map ONCE — O(n). All lookups inside the loop are O(1)
+  const gateMap = buildGateMap(updatedGates)
+
   const queue = [startGateId]
   const visited = new Set()
   let iterations = 0
@@ -42,8 +44,8 @@ export function propagate(circuit, startGateId) {
     if (visited.has(currentGateId)) continue
     visited.add(currentGateId)
 
-    // O(n) lookup — scans array until gate is found
-    const currentGate = findGateById(updatedGates, currentGateId)
+    // O(1) lookup — no array scanning
+    const currentGate = gateMap.get(currentGateId)
     if (!currentGate) continue
 
     const previousOutput = currentGate.output
@@ -55,8 +57,8 @@ export function propagate(circuit, startGateId) {
 
     if (shouldPropagate && currentGate.connectedTo?.length > 0) {
       currentGate.connectedTo.forEach(connection => {
-        // O(n) lookup for each connected gate
-        const targetGate = findGateById(updatedGates, connection.gateId)
+        // O(1) lookup — no array scanning
+        const targetGate = gateMap.get(connection.gateId)
 
         if (targetGate) {
           targetGate.inputs[connection.inputIndex] = newOutput
@@ -82,7 +84,6 @@ export function propagate(circuit, startGateId) {
 /**
  * Updates a specific gate's input value and triggers propagation.
  * This is the entry point called when a user toggles an INPUT node.
- *
  * @param {Object} circuit - The current circuit state
  * @param {string} gateId - ID of the gate whose input changed
  * @param {number} inputIndex - Which input slot changed (0, 1, 2...)
@@ -91,7 +92,10 @@ export function propagate(circuit, startGateId) {
  */
 export function updateGateInput(circuit, gateId, inputIndex, newValue) {
   const updatedGates = deepCopyGates(circuit.gates)
-  const targetGate = findGateById(updatedGates, gateId)
+
+  // Build Map for O(1) lookup
+  const gateMap = buildGateMap(updatedGates)
+  const targetGate = gateMap.get(gateId)
 
   if (!targetGate) {
     console.warn(`Gate with ID ${gateId} not found`)
@@ -105,9 +109,7 @@ export function updateGateInput(circuit, gateId, inputIndex, newValue) {
 }
 
 /**
- * Finds a gate by ID using Array.find().
- * Time complexity: O(n)
- *
+ * Finds a gate by ID from an array using Array.find().
  * @param {Object[]} gates - Array of gate objects
  * @param {string} id - The gate ID to search for
  * @returns {Object|null}
@@ -118,8 +120,6 @@ export function findGateById(gates, id) {
 
 /**
  * Creates a deep copy of the gates array.
- * Immutability is critical for React state management and undo/redo.
- *
  * @param {Object[]} gates - Array of gate objects to copy
  * @returns {Object[]}
  */
@@ -136,7 +136,6 @@ export function deepCopyGates(gates) {
 /**
  * Evaluates every gate in the circuit from scratch.
  * Used when loading a saved circuit or resetting simulation.
- *
  * @param {Object} circuit - The circuit state to evaluate
  * @returns {Object}
  */
