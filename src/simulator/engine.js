@@ -6,6 +6,9 @@
  *  Resetting the circuit
  */
 
+// Importing constants.js
+import { GATE_TYPES, SIMULATION } from '../utils/constants'
+
 import { propagate, updateGateInput, deepCopyGates, evaluateFullCircuit } from './propagation'
 import { evaluateGate } from './gateLogic'
 
@@ -176,7 +179,7 @@ export function toggleInput(circuit, gateId) {
     return circuit
   }
 
-  if (gate.type !== 'INPUT') {
+  if (gate.type !== GATE_TYPES.INPUT) {
     console.warn(`Gate ${gateId} is not an INPUT node`)
     return circuit
   }
@@ -204,7 +207,7 @@ export function setInputValue(circuit, gateId, value) {
     return circuit
   }
 
-  if (gate.type !== 'INPUT') {
+  if (gate.type !== GATE_TYPES.INPUT) {
     console.warn(`Gate ${gateId} is not an INPUT node`)
     return circuit
   }
@@ -223,7 +226,7 @@ export function resetCircuit(circuit) {
 
   // Reset all INPUT nodes to 0
   updatedGates.forEach(gate => {
-    if (gate.type === 'INPUT') {
+    if (gate.type === GATE_TYPES.INPUT) {
       gate.inputs = [0]
       gate.output = 0
     }

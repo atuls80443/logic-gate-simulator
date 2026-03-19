@@ -5,6 +5,9 @@
  * LOOKUP STRATEGY: Map.get() — O(1) per lookup.
  */
 
+// Import constants.js
+import { GATE_TYPES } from '../utils/constants'
+
 import { evaluateGate } from './gateLogic'
 
 const MAX_ITERATIONS = 1000
@@ -141,7 +144,7 @@ export function deepCopyGates(gates) {
  */
 export function evaluateFullCircuit(circuit) {
   const updatedGates = deepCopyGates(circuit.gates)
-  const inputNodes = updatedGates.filter(gate => gate.type === 'INPUT')
+  const inputNodes = updatedGates.filter(gate => gate.type === GATE_TYPES.INPUT)
   let currentCircuit = { ...circuit, gates: updatedGates }
 
   inputNodes.forEach(inputNode => {
