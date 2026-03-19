@@ -6,7 +6,7 @@
 ## 🚀 Live Demo
 *Coming soon*
 
-## ✨ Features
+## Features
 - 7 basic logic gates: AND, OR, NOT, NAND, NOR, XOR, XNOR
 - Drag-and-drop circuit building on an interactive canvas
 - Real-time event-driven signal propagation
@@ -14,7 +14,7 @@
 - Sequential circuits: SR Latch, D Flip-Flop, 4-bit Counter
 - Save and load circuits as JSON
 
-## 🛠 Tech Stack
+## Tech Stack
 | Layer | Technology |
 |---|---|
 | Frontend | React 18 |
@@ -24,7 +24,7 @@
 | Build Tool | Vite |
 | Testing | Vitest |
 
-## ⚙️ Getting Started
+## Getting Started
 ```bash
 # Clone the repository
 git clone https://github.com/atuls80443/logic-gate-simulator.git
@@ -37,7 +37,7 @@ npm install
 npm run dev
 ```
 
-## 🗂 Project Structure
+## Project Structure
 ```
 src/
 ├── components/    # React visual components
@@ -47,18 +47,18 @@ src/
 └── utils/         # Helper functions
 ```
 
-## 🧪 Running Tests
+## Running Tests
 ```bash
 npm run test
 ```
 
-## 📈 Development Roadmap
+## Development Roadmap
 - [x] Phase 1: Project setup and architecture
-- [ ] Phase 2: Simulation engine and gate logic
+- [X] Phase 2: Simulation engine and gate logic
 - [ ] Phase 3: Canvas, wiring, and signal propagation
 - [ ] Phase 4: Combinational circuits
 - [ ] Phase 5: Sequential circuits
 - [ ] Phase 6: Save/load and polish
 
-## 📄 License
+## License
 MIT
