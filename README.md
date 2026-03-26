@@ -56,7 +56,7 @@ npm run test
 - [x] Phase 1: Project setup and architecture
 - [X] Phase 2: Simulation engine and gate logic
 - [X] Phase 3: Canvas, wiring, and signal propagation
-- [ ] Phase 4: Combinational circuits
+- [X] Phase 4: Combinational circuits
 - [ ] Phase 5: Sequential circuits
 - [ ] Phase 6: Save/load and polish
 
