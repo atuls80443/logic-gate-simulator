@@ -5,6 +5,7 @@
  * store actions which call engine functions internally.
  */
 
+
 import { create } from 'zustand'
 import {
   createCircuit,
@@ -20,6 +21,7 @@ import {
 } from '../simulator/engine'
 import { generateUniqueGateId } from '../utils/idGenerator'
 import { GATE_INPUT_COUNTS, SIMULATION } from '../utils/constants'
+import { evaluateFullCircuit } from '../simulator/propagation'
 
 //      Initial State 
 const initialState = {
@@ -228,6 +230,38 @@ export const useCircuitStore = create((set, get) => ({
     set({ circuit: updatedCircuit, nodes, edges, isSimulating: true })
   },
 
+  // ── Load Template Action ─────────────────────────────────────────────────────
+  /**
+   * Loads a pre-built circuit template onto the canvas.
+   * Replaces the current circuit entirely.
+   *
+   * WHY evaluateFullCircuit after loading:
+   * Template gates start with output:0 for all gates.
+   * evaluateFullCircuit propagates signals through
+   * the circuit so initial state is correct.
+   *
+   * @param {Function} templateFactory - Factory function from circuitTemplates.js
+   */
+  loadTemplateAction: (templateFactory) => {
+    // WHY call as function: factory creates fresh object with new IDs
+    const template = templateFactory()
+
+    // Build circuit from template gates
+    const circuit = { gates: template.gates }
+
+    // Evaluate so all outputs reflect current inputs
+    const evaluatedCircuit = evaluateFullCircuit(circuit)
+
+    // Sync React Flow
+    const { nodes, edges } = syncReactFlow(evaluatedCircuit)
+
+    set({
+      circuit: evaluatedCircuit,
+      nodes,
+      edges,
+      selectedGateId: null
+    })
+  },
   //    Select Gate Action 
   /**
    * Used to highlight a gate and show its properties in sidebar.

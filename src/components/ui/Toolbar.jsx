@@ -1,12 +1,9 @@
+// imports must ALWAYS be at the very top — before anything else
+import { useCircuitStore }   from '../../store/circuitStore'
+import { GATE_CATEGORIES }   from '../../utils/constants'
+import { CIRCUIT_TEMPLATES } from '../../utils/circuitTemplates'
 
-// Provides the left panel where users select gate types
- 
-
-import { useCircuitStore } from '../../store/circuitStore'
-import { GATE_CATEGORIES, GATE_TYPES } from '../../utils/constants'
-
-//      Gate Button Colors 
-
+// ─── constants defined here are fine — they are NOT hooks ────────────────────
 const GATE_COLORS = {
   AND:    'border-blue-500   bg-blue-900/30   text-blue-300   hover:bg-blue-800/50',
   OR:     'border-purple-500 bg-purple-900/30 text-purple-300 hover:bg-purple-800/50',
@@ -19,7 +16,6 @@ const GATE_COLORS = {
   OUTPUT: 'border-blue-400   bg-blue-900/40   text-blue-200   hover:bg-blue-800/60',
 }
 
-//      Gate Descriptions 
 const GATE_DESCRIPTIONS = {
   AND:    'Output HIGH only when ALL inputs HIGH',
   OR:     'Output HIGH when ANY input is HIGH',
@@ -32,12 +28,10 @@ const GATE_DESCRIPTIONS = {
   OUTPUT: 'Displays circuit result',
 }
 
-//      Single Gate Button 
+// ─── GateButton — no hooks here, only drag behavior ──────────────────────────
 function GateButton({ gateType }) {
-  // setData: CircuitCanvas reads this on drop to know which gate to add
   const onDragStart = (event) => {
     event.dataTransfer.setData('application/gateType', gateType)
-    // move: tells browser this is a move operation not a copy
     event.dataTransfer.effectAllowed = 'move'
   }
 
@@ -62,19 +56,19 @@ function GateButton({ gateType }) {
   )
 }
 
-//      Toolbar Component 
+// ─── Toolbar Component ────────────────────────────────────────────────────────
 export default function Toolbar() {
-  //    Store Actions 
+
+  // ── ALL useCircuitStore calls MUST be inside this function body ───────────
+  // WHY: React hooks cannot be called outside a component function
+  // The three lines below were incorrectly placed outside in your file
   const resetCircuitAction = useCircuitStore(state => state.resetCircuitAction)
   const clearCircuitAction = useCircuitStore(state => state.clearCircuitAction)
+  const loadTemplateAction = useCircuitStore(state => state.loadTemplateAction)
 
   return (
-    <div
-      className="
-        w-52 h-full bg-slate-900 border-r border-slate-700
-        flex flex-col overflow-y-auto
-      "
-    >
+    <div className="w-52 h-full bg-slate-900 border-r border-slate-700 flex flex-col overflow-y-auto">
+
       {/* Header */}
       <div className="p-3 border-b border-slate-700">
         <h2 className="text-slate-200 font-bold font-mono text-sm">
@@ -85,7 +79,7 @@ export default function Toolbar() {
         </p>
       </div>
 
-      {/* Basic Gates Section */}
+      {/* Basic Gates */}
       <div className="p-3 border-b border-slate-700">
         <h3 className="text-slate-400 text-xs font-mono uppercase mb-2">
           Basic Gates
@@ -97,7 +91,7 @@ export default function Toolbar() {
         </div>
       </div>
 
-      {/* I/O Section */}
+      {/* Input / Output */}
       <div className="p-3 border-b border-slate-700">
         <h3 className="text-slate-400 text-xs font-mono uppercase mb-2">
           Input / Output
@@ -109,13 +103,34 @@ export default function Toolbar() {
         </div>
       </div>
 
-      {/* Controls Section */}
+      {/* Templates */}
+      <div className="p-3 border-b border-slate-700">
+        <h3 className="text-slate-400 text-xs font-mono uppercase mb-2">
+          Templates
+        </h3>
+        <div className="flex flex-col gap-2">
+          {CIRCUIT_TEMPLATES.map(template => (
+            <button
+              key={template.id}
+              onClick={() => loadTemplateAction(template.create)}
+              className="
+                border rounded-lg p-2 text-left
+                border-slate-500 bg-slate-800/50 text-slate-300
+                hover:bg-slate-700/50 hover:border-slate-400
+                font-mono text-sm transition-all duration-150
+              "
+            >
+              {template.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Controls */}
       <div className="p-3 mt-auto border-t border-slate-700">
         <h3 className="text-slate-400 text-xs font-mono uppercase mb-2">
           Controls
         </h3>
-
-        {/* WHY Reset: user wants to test different input combinations without rebuilding the entire circuit */}
         <button
           onClick={resetCircuitAction}
           className="
@@ -126,8 +141,6 @@ export default function Toolbar() {
         >
           Reset Inputs
         </button>
-
-        {/* WHY Clear: user wants to start a completely new circuit */}
         <button
           onClick={clearCircuitAction}
           className="
@@ -139,6 +152,7 @@ export default function Toolbar() {
           Clear Canvas
         </button>
       </div>
+
     </div>
   )
 }
