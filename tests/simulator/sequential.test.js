@@ -1,12 +1,3 @@
-/**
- * sequential.test.js
- *
- * WHY SEQUENTIAL TESTS DIFFER FROM COMBINATIONAL:
- * Combinational: test single input → output mapping
- * Sequential: test SEQUENCES of inputs across multiple steps
- * Memory behavior only verifiable across multiple operations.
- * Must simulate clock cycles and track state transitions.
- */
 
 import { describe, it, expect } from 'vitest'
 import {
@@ -18,10 +9,10 @@ import {
   rippleCounter4bit
 } from '../../src/simulator/sequential'
 
-// ─── SR Latch Tests ───────────────────────────────────────────────────────────
+//    SR Latch Tests 
 describe('SR Latch', () => {
 
-  // ── Basic Operations ───────────────────────────────────────────────────────
+  // Basic Operations 
   it('S=1,R=0 sets Q to 1', () => {
     const state = srLatch(1, 0, { q: 0, qBar: 1 })
     expect(state.q).toBe(1)
@@ -45,7 +36,7 @@ describe('SR Latch', () => {
     expect(state.q).toBe(0)
   })
 
-  // ── Forbidden State ────────────────────────────────────────────────────────
+  // Forbidden State 
   it('S=1,R=1 flags forbidden state', () => {
     const state = srLatch(1, 1, { q: 0, qBar: 1 })
     expect(state.forbidden).toBe(true)
@@ -57,9 +48,7 @@ describe('SR Latch', () => {
     expect(state.qBar).toBe(0)
   })
 
-  // ── Recovery After Forbidden State ────────────────────────────────────────
-  // WHY test recovery: circuit must behave correctly
-  // after recovering from S=R=1 forbidden state
+  // Recovery After Forbidden State 
   it('recovers to SET state after forbidden state', () => {
     // Enter forbidden state
     let state = srLatch(1, 1, { q: 0, qBar: 1 })
@@ -81,33 +70,32 @@ describe('SR Latch', () => {
     expect(state.forbidden).toBe(false)
   })
 
-  // ── Memory Sequence ────────────────────────────────────────────────────────
-  // WHY test full sequence: memory only proven across multiple steps
+  // Memory Sequence 
   it('demonstrates full set-hold-reset-hold sequence', () => {
-    // Step 1: Set
+    // Set
     let state = srLatch(1, 0, { q: 0, qBar: 1 })
     expect(state.q).toBe(1)
 
-    // Step 2: Hold — memory working
+    // Hold 
     state = srLatch(0, 0, state)
     expect(state.q).toBe(1)
 
-    // Step 3: Reset
+    // Reset
     state = srLatch(0, 1, state)
     expect(state.q).toBe(0)
 
-    // Step 4: Hold — memory working
+    // Hold — memory working
     state = srLatch(0, 0, state)
     expect(state.q).toBe(0)
   })
 
-  // ── Input Validation ───────────────────────────────────────────────────────
+  // Input Validation 
   it('throws error for invalid input value', () => {
     expect(() => srLatch(2, 0, { q: 0, qBar: 1 }))
       .toThrow('Invalid input')
   })
 
-  // ── Iterative Stabilization ───────────────────────────────────────────────
+  // Iterative Stabilization 
   it('reaches stable state after SET', () => {
     const state = srLatch(1, 0, { q: 0, qBar: 1 })
     expect(state.stable).toBe(true)
@@ -119,7 +107,7 @@ describe('SR Latch', () => {
   })
 })
 
-// ─── D Latch Tests ────────────────────────────────────────────────────────────
+// D Latch Tests 
 describe('D Latch', () => {
   it('captures D=1 when enable=1', () => {
     const state = dLatch(1, 1, { q: 0, qBar: 1 })
@@ -148,10 +136,10 @@ describe('D Latch', () => {
   })
 })
 
-// ─── D Flip-Flop Tests ────────────────────────────────────────────────────────
+//    D Flip-Flop Tests 
 describe('D Flip-Flop', () => {
 
-  // ── Rising Edge Capture ────────────────────────────────────────────────────
+  // Rising Edge Capture 
   it('captures D=1 on rising clock edge (0→1)', () => {
     const state = dFlipFlop(1, 1, { q: 0, qBar: 1, prevClk: 0 })
     expect(state.q).toBe(1)
@@ -162,7 +150,7 @@ describe('D Flip-Flop', () => {
     expect(state.q).toBe(0)
   })
 
-  // ── Hold State ─────────────────────────────────────────────────────────────
+  // Hold State 
   it('holds value when CLK stays HIGH (no rising edge)', () => {
     // prevClk=1, clk=1 → no rising edge → D=1 ignored
     const state = dFlipFlop(1, 1, { q: 0, qBar: 1, prevClk: 1 })
@@ -180,8 +168,7 @@ describe('D Flip-Flop', () => {
     expect(state.q).toBe(0)
   })
 
-  // ── Rapid Clock Toggling ───────────────────────────────────────────────────
-  // WHY test rapid toggling: verifies edge detection across many cycles
+  // Rapid Clock Toggling 
   it('handles rapid clock toggling correctly', () => {
     let state = { q: 0, qBar: 1, prevClk: 0 }
 
@@ -206,7 +193,7 @@ describe('D Flip-Flop', () => {
     expect(state.q).toBe(1)
   })
 
-  // ── Multiple Clock Cycles ──────────────────────────────────────────────────
+  // Multiple Clock Cycles 
   it('correctly tracks state across 5 clock cycles', () => {
     let state = { q: 0, qBar: 1, prevClk: 0 }
     const dInputs = [1, 0, 1, 1, 0]
@@ -219,7 +206,7 @@ describe('D Flip-Flop', () => {
     })
   })
 
-  // ── Input Validation ───────────────────────────────────────────────────────
+  // Input Validation 
   it('throws error for invalid D input', () => {
     expect(() => dFlipFlop(2, 1, { q: 0, qBar: 1, prevClk: 0 }))
       .toThrow('Invalid input')
@@ -231,7 +218,7 @@ describe('D Flip-Flop', () => {
   })
 })
 
-// ─── T Flip-Flop Tests ────────────────────────────────────────────────────────
+//      T Flip-Flop Tests 
 describe('T Flip-Flop', () => {
   it('toggles Q from 0 to 1 on rising edge with T=1', () => {
     const state = tFlipFlop(1, 1, { q: 0, qBar: 1, prevClk: 0 })
@@ -256,7 +243,7 @@ describe('T Flip-Flop', () => {
     expect(state.q).toBe(0)
   })
 
-  // ── Rapid Toggling ─────────────────────────────────────────────────────────
+  //      Rapid Toggling 
   it('toggles correctly across 4 rapid clock cycles', () => {
     let state = { q: 0, qBar: 1, prevClk: 0 }
     const expected = [1, 0, 1, 0]
@@ -274,7 +261,7 @@ describe('T Flip-Flop', () => {
   })
 })
 
-// ─── 4-bit Register Tests ─────────────────────────────────────────────────────
+//      4-bit Register Tests 
 describe('4-bit Register', () => {
   it('captures 4 bits on rising clock edge', () => {
     const prevStates = Array(4).fill({ q: 0, qBar: 1, prevClk: 0 })
@@ -305,11 +292,9 @@ describe('4-bit Register', () => {
   })
 })
 
-// ─── 4-bit Ripple Counter Tests ───────────────────────────────────────────────
+//      4-bit Ripple Counter Tests 
 describe('4-bit Ripple Counter', () => {
 
-  // WHY helper: one clock pulse = falling then rising edge
-  // Simulates one complete clock cycle manually
   function clockPulse(states) {
     let r = rippleCounter4bit(0, states)    // falling edge
     r = rippleCounter4bit(1, r.prevStates)  // rising edge
@@ -317,14 +302,12 @@ describe('4-bit Ripple Counter', () => {
   }
 
   it('starts at 0000 with no clock pulse', () => {
-    // WHY no prevStates: use counter's own safe defaults
-    // Avoids shared reference and wrong prevClk problems
     const result = rippleCounter4bit(0)
     expect(result.count).toEqual([0, 0, 0, 0])
   })
 
   it('counts 0→1→2→3 correctly', () => {
-    // WHY start fresh: counter initializes its own correct state
+    // fresh start: counter initializes its own correct state
     let result = { prevStates: Array.from(
       { length: 4 },
       () => ({ q: 0, qBar: 1, prevClk: 0 })

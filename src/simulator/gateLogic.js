@@ -1,10 +1,6 @@
-/**
- * gateLogic.js
- *
- * Pure Boolean logic functions for all supported gate types.
- * All inputs are numbers: 0 (LOW) or 1 (HIGH)
- * All functions return a number: 0 or 1
- */
+
+// gateLogic.js - Implements the logic for each gate type
+
 
 //       AND Gate
 // Output is 1 only when ALL inputs are 1

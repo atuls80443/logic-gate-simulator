@@ -1,9 +1,5 @@
-/**
- * WHY THIS FILE EXISTS:
- * React Flow requires ONE registered component per node type.
- * Instead of registering all 7 gates separately, GateNode acts
- * as a single dispatcher
- */
+
+// GateNode.jsx - Dynamically renders the correct gate component based on passed data
 
 import AndGate  from './AndGate'
 import OrGate   from './OrGate'
@@ -28,10 +24,6 @@ const GATE_COMPONENTS = {
 /**
  * @param {Object} data     - Passed by React Flow from the node data field
  * @param {boolean} selected - Passed by React Flow when node is selected
- * data contains:
- *   gateType: string  - which gate to render (AND, OR, NOT...)
- *   inputs:   array   - current input values [0,1] etc
- *   output:   number  - current output value 0 or 1
  */
 export default function GateNode({ data, selected }) {
   //        Dispatcher 
