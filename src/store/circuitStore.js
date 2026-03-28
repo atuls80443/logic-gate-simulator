@@ -58,7 +58,7 @@ function gatesToNodes(gates) {
       gateType:  gate.type,
       inputs:    gate.inputs,
       output:    gate.output,
-      label:     gate.type,
+      label:     gate.label ||gate.type,
     }
   }))
 }

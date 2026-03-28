@@ -41,7 +41,7 @@ export default function OutputNode({ data, selected }) {
 
       {/* Node Label  */}
       <div className="text-center text-xs text-slate-400 mt-1 font-mono">
-        OUT
+        {data.label || 'OUT'}
       </div>
     </div>
   )

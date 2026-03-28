@@ -63,7 +63,8 @@ export function createHalfAdderTemplate() {
           // both gates need both inputs for half adder
           { gateId: xorGate, inputIndex: 0 },
           { gateId: andGate, inputIndex: 0 },
-        ]
+        ],
+        label: 'A'
       },
       {
         id: inputB,
@@ -74,7 +75,8 @@ export function createHalfAdderTemplate() {
         connectedTo: [
           { gateId: xorGate, inputIndex: 1 },
           { gateId: andGate, inputIndex: 1 },
-        ]
+        ],
+        label: 'B'
       },
       {
         id: xorGate,
@@ -102,7 +104,8 @@ export function createHalfAdderTemplate() {
         inputs: [0],
         output: 0,
         position: { x: 540, y: 150 },
-        connectedTo: []
+        connectedTo: [],
+        label: 'SUM'
       },
       {
         id: outCarry,
@@ -110,7 +113,8 @@ export function createHalfAdderTemplate() {
         inputs: [0],
         output: 0,
         position: { x: 540, y: 280 },
-        connectedTo: []
+        connectedTo: [],
+        label: 'CARRY'
       },
     ]
   }
@@ -153,7 +157,8 @@ export function createFullAdderTemplate() {
         connectedTo: [
           { gateId: xor1, inputIndex: 0 },
           { gateId: and1, inputIndex: 0 },
-        ]
+        ],
+        label: 'A'
       },
       {
         id: inputB,
@@ -163,7 +168,8 @@ export function createFullAdderTemplate() {
         connectedTo: [
           { gateId: xor1, inputIndex: 1 },
           { gateId: and1, inputIndex: 1 },
-        ]
+        ],
+        label: 'B'
       },
       {
         id: inputCin,
@@ -173,7 +179,8 @@ export function createFullAdderTemplate() {
         connectedTo: [
           { gateId: xor2, inputIndex: 1 },
           { gateId: and2, inputIndex: 1 },
-        ]
+        ],
+        label: 'CIN'
       },
       {
         id: xor1,
@@ -226,14 +233,16 @@ export function createFullAdderTemplate() {
         type: GATE_TYPES.OUTPUT,
         inputs: [0], output: 0,
         position: { x: 700, y: 160 },
-        connectedTo: []
+        connectedTo: [],
+        label: 'SUM'
       },
       {
         id: outCout,
         type: GATE_TYPES.OUTPUT,
         inputs: [0], output: 0,
         position: { x: 800, y: 300 },
-        connectedTo: []
+        connectedTo: [],
+        label: 'COUT'
       },
     ]
   }
@@ -264,14 +273,16 @@ export function createMuxTemplate() {
         type: GATE_TYPES.INPUT,
         inputs: [0], output: 0,
         position: { x: 80, y: 100 },
-        connectedTo: [{ gateId: and1, inputIndex: 0 }]
+        connectedTo: [{ gateId: and1, inputIndex: 0 }],
+        label: 'D0'
       },
       {
         id: inputD1,
         type: GATE_TYPES.INPUT,
         inputs: [0], output: 0,
         position: { x: 80, y: 300 },
-        connectedTo: [{ gateId: and2, inputIndex: 0 }]
+        connectedTo: [{ gateId: and2, inputIndex: 0 }],
+        label: 'D1'
       },
       {
         id: inputS,
@@ -281,14 +292,15 @@ export function createMuxTemplate() {
         connectedTo: [
           { gateId: notGate, inputIndex: 0 },
           { gateId: and2,    inputIndex: 1 },
-        ]
+        ],
+        label: 'S'
       },
       {
         id: notGate,
         type: GATE_TYPES.NOT,
         inputs: [0], output: 0,
         position: { x: 260, y: 160 },
-        connectedTo: [{ gateId: and1, inputIndex: 1 }]
+        connectedTo: [{ gateId: and1, inputIndex: 1 }],
       },
       {
         id: and1,
@@ -316,7 +328,8 @@ export function createMuxTemplate() {
         type: GATE_TYPES.OUTPUT,
         inputs: [0], output: 0,
         position: { x: 720, y: 200 },
-        connectedTo: []
+        connectedTo: [],
+        label: 'OUT'
       },
     ]
   }
@@ -350,7 +363,8 @@ export function createDecoderTemplate() {
           { gateId: notA,  inputIndex: 0 },
           { gateId: and2,  inputIndex: 0 },
           { gateId: and3,  inputIndex: 0 },
-        ]
+        ],
+        label: 'A'
       },
       {
         id: inputB,
@@ -361,7 +375,8 @@ export function createDecoderTemplate() {
           { gateId: notB,  inputIndex: 0 },
           { gateId: and1,  inputIndex: 1 },
           { gateId: and3,  inputIndex: 1 },
-        ]
+        ],
+        label: 'B'
       },
       {
         id: notA,
@@ -416,63 +431,261 @@ export function createDecoderTemplate() {
         type: GATE_TYPES.OUTPUT,
         inputs: [0], output: 0,
         position: { x: 600, y: 80 },
-        connectedTo: []
+        connectedTo: [],
+        label: 'OUT0'
       },
       {
         id: out1,
         type: GATE_TYPES.OUTPUT,
         inputs: [0], output: 0,
         position: { x: 600, y: 200 },
-        connectedTo: []
+        connectedTo: [],
+        label: 'OUT1'
       },
       {
         id: out2,
         type: GATE_TYPES.OUTPUT,
         inputs: [0], output: 0,
         position: { x: 600, y: 320 },
-        connectedTo: []
+        connectedTo: [],
+        label: 'OUT2'
       },
       {
         id: out3,
         type: GATE_TYPES.OUTPUT,
         inputs: [0], output: 0,
         position: { x: 600, y: 440 },
+        connectedTo: [],
+        label: 'OUT3'
+      },
+    ]
+  }
+}
+
+// ─── SR Latch Template ────────────────────────────────────────────────────────
+/**
+ * WHY SR LATCH TEMPLATE:
+ * Shows users the simplest memory element.
+ * Demonstrates feedback loop visually.
+ * Two NOR gates with cross-coupled connections.
+ */
+export function createSRLatchTemplate() {
+  const inputS  = generateUniqueGateId(GATE_TYPES.INPUT,  [])
+  const inputR  = generateUniqueGateId(GATE_TYPES.INPUT,  [])
+  const nor1    = generateUniqueGateId(GATE_TYPES.NOR,    [])
+  const nor2    = generateUniqueGateId(GATE_TYPES.NOR,    [])
+  const outQ    = generateUniqueGateId(GATE_TYPES.OUTPUT, [])
+  const outQBar = generateUniqueGateId(GATE_TYPES.OUTPUT, [])
+
+  return {
+    name: 'SR Latch',
+    description: 'Basic memory element. S=Set, R=Reset, S=R=0 holds value.',
+    gates: [
+      {
+        id: inputS,
+        type: GATE_TYPES.INPUT,
+        inputs: [0], output: 0,
+        position: { x: 80, y: 120 },
+        connectedTo: [
+          { gateId: nor1, inputIndex: 0 }
+        ]
+      },
+      {
+        id: inputR,
+        type: GATE_TYPES.INPUT,
+        inputs: [0], output: 0,
+        position: { x: 80, y: 320 },
+        connectedTo: [
+          { gateId: nor2, inputIndex: 1 }
+        ]
+      },
+      {
+        id: nor1,
+        type: GATE_TYPES.NOR,
+        inputs: [0, 0], output: 0,
+        position: { x: 300, y: 120 },
+        connectedTo: [
+          { gateId: outQ,  inputIndex: 0 },
+          { gateId: nor2,  inputIndex: 0 },
+        ]
+      },
+      {
+        id: nor2,
+        type: GATE_TYPES.NOR,
+        inputs: [0, 0], output: 0,
+        position: { x: 300, y: 320 },
+        connectedTo: [
+          { gateId: outQBar, inputIndex: 0 },
+          { gateId: nor1,    inputIndex: 1 },
+        ]
+      },
+      {
+        id: outQ,
+        type: GATE_TYPES.OUTPUT,
+        inputs: [0], output: 0,
+        position: { x: 520, y: 120 },
+        connectedTo: []
+      },
+      {
+        id: outQBar,
+        type: GATE_TYPES.OUTPUT,
+        inputs: [0], output: 0,
+        position: { x: 520, y: 320 },
         connectedTo: []
       },
     ]
   }
 }
 
-// ─── Template Registry ────────────────────────────────────────────────────────
+// ─── D Flip-Flop Template ─────────────────────────────────────────────────────
 /**
- * WHY A REGISTRY:
- * Single place to look up all available templates.
- * Toolbar reads this to build the templates section.
- * Adding a new template = adding one entry here.
- * Nothing else needs to change.
- *
- * This is the DISPATCHER PATTERN again —
- * same pattern as evaluateGate and GateNode.
+ * WHY D FLIP-FLOP TEMPLATE:
+ * Shows edge-triggered memory behavior.
+ * Most important circuit in digital design.
+ * Users can toggle D and CLK to see edge-triggered capture.
  */
+export function createDFlipFlopTemplate() {
+  const inputD   = generateUniqueGateId(GATE_TYPES.INPUT,  [])
+  const inputClk = generateUniqueGateId(GATE_TYPES.INPUT,  [])
+  const notD     = generateUniqueGateId(GATE_TYPES.NOT,    [])
+  const notClk   = generateUniqueGateId(GATE_TYPES.NOT,    [])
+  const nand1    = generateUniqueGateId(GATE_TYPES.NAND,   [])
+  const nand2    = generateUniqueGateId(GATE_TYPES.NAND,   [])
+  const nand3    = generateUniqueGateId(GATE_TYPES.NAND,   [])
+  const nand4    = generateUniqueGateId(GATE_TYPES.NAND,   [])
+  const outQ     = generateUniqueGateId(GATE_TYPES.OUTPUT, [])
+  const outQBar  = generateUniqueGateId(GATE_TYPES.OUTPUT, [])
+
+  return {
+    name: 'D Flip-Flop',
+    description: 'Edge-triggered memory. Q captures D only on CLK rising edge.',
+    gates: [
+      {
+        id: inputD,
+        type: GATE_TYPES.INPUT,
+        inputs: [0], output: 0,
+        position: { x: 60, y: 140 },
+        connectedTo: [
+          { gateId: notD,  inputIndex: 0 },
+          { gateId: nand1, inputIndex: 0 },
+        ]
+      },
+      {
+        id: inputClk,
+        type: GATE_TYPES.INPUT,
+        inputs: [0], output: 0,
+        position: { x: 60, y: 280 },
+        connectedTo: [
+          { gateId: notClk, inputIndex: 0 },
+          { gateId: nand1,  inputIndex: 1 },
+          { gateId: nand2,  inputIndex: 1 },
+        ]
+      },
+      {
+        id: notD,
+        type: GATE_TYPES.NOT,
+        inputs: [0], output: 0,
+        position: { x: 200, y: 340 },
+        connectedTo: [
+          { gateId: nand2, inputIndex: 0 }
+        ]
+      },
+      {
+        id: notClk,
+        type: GATE_TYPES.NOT,
+        inputs: [0], output: 0,
+        position: { x: 200, y: 460 },
+        connectedTo: []
+      },
+      {
+        id: nand1,
+        type: GATE_TYPES.NAND,
+        inputs: [0, 0], output: 1,
+        position: { x: 340, y: 140 },
+        connectedTo: [
+          { gateId: nand3, inputIndex: 0 },
+          { gateId: nand2, inputIndex: 1 },
+        ]
+      },
+      {
+        id: nand2,
+        type: GATE_TYPES.NAND,
+        inputs: [0, 0], output: 1,
+        position: { x: 340, y: 320 },
+        connectedTo: [
+          { gateId: nand4, inputIndex: 1 },
+          { gateId: nand1, inputIndex: 1 },
+        ]
+      },
+      {
+        id: nand3,
+        type: GATE_TYPES.NAND,
+        inputs: [0, 0], output: 1,
+        position: { x: 520, y: 100 },
+        connectedTo: [
+          { gateId: outQ,   inputIndex: 0 },
+          { gateId: nand4,  inputIndex: 0 },
+        ]
+      },
+      {
+        id: nand4,
+        type: GATE_TYPES.NAND,
+        inputs: [0, 0], output: 1,
+        position: { x: 520, y: 300 },
+        connectedTo: [
+          { gateId: outQBar, inputIndex: 0 },
+          { gateId: nand3,   inputIndex: 1 },
+        ]
+      },
+      {
+        id: outQ,
+        type: GATE_TYPES.OUTPUT,
+        inputs: [0], output: 0,
+        position: { x: 700, y: 100 },
+        connectedTo: []
+      },
+      {
+        id: outQBar,
+        type: GATE_TYPES.OUTPUT,
+        inputs: [0], output: 0,
+        position: { x: 700, y: 300 },
+        connectedTo: []
+      },
+    ]
+  }
+}
+
+//    Template Registry 
+
 export const CIRCUIT_TEMPLATES = [
   {
-    id:      'half-adder',
-    name:    'Half Adder',
-    create:  createHalfAdderTemplate,
+    id:     'half-adder',
+    name:   'Half Adder',
+    create: createHalfAdderTemplate,
   },
   {
-    id:      'full-adder',
-    name:    'Full Adder',
-    create:  createFullAdderTemplate,
+    id:     'full-adder',
+    name:   'Full Adder',
+    create: createFullAdderTemplate,
   },
   {
-    id:      'mux-2to1',
-    name:    '2-to-1 MUX',
-    create:  createMuxTemplate,
+    id:     'mux-2to1',
+    name:   '2-to-1 MUX',
+    create: createMuxTemplate,
   },
   {
-    id:      'decoder-2to4',
-    name:    '2-to-4 Decoder',
-    create:  createDecoderTemplate,
+    id:     'decoder-2to4',
+    name:   '2-to-4 Decoder',
+    create: createDecoderTemplate,
+  },
+  {
+    id:     'sr-latch',
+    name:   'SR Latch',
+    create: createSRLatchTemplate,
+  },
+  {
+    id:     'd-flip-flop',
+    name:   'D Flip-Flop',
+    create: createDFlipFlopTemplate,
   },
 ]

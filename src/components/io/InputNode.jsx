@@ -41,7 +41,7 @@ export default function InputNode({ id, data, selected }) {
 
       {/* Node Label  */}
       <div className="text-center text-xs text-slate-400 mt-1 font-mono">
-        IN
+        {data.label || 'IN'}
       </div>
 
       {/* Source Handle Only  */}
