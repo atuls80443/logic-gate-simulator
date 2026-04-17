@@ -210,3 +210,89 @@ describe('runSimulation', () => {
     expect(getGateOutput(circuit, 'xor_gate')).toBe(1)
   })
 })
+
+describe('Mentor Tests: Reconvergent Fanout & Propagation', () => {
+  it('propagates through a simple NOT chain', () => {
+    let c = createCircuit()
+
+    c = addGate(c, 'in1', 'INPUT', 1, { x: 0, y: 0 })
+    c = addGate(c, 'not1', 'NOT', 1, { x: 100, y: 0 })
+    c = addGate(c, 'not2', 'NOT', 1, { x: 200, y: 0 })
+    c = addGate(c, 'out1', 'OUTPUT', 1, { x: 300, y: 0 })
+
+    c = connectGates(c, 'in1', 'not1', 0)
+    c = connectGates(c, 'not1', 'not2', 0)
+    c = connectGates(c, 'not2', 'out1', 0)
+
+    c = setInputValue(c, 'in1', 1)
+
+    expect(getGateOutput(c, 'not1')).toBe(0)
+    expect(getGateOutput(c, 'not2')).toBe(1)
+    expect(getGateOutput(c, 'out1')).toBe(1)
+  })
+
+  it('handles reconvergent fanout (the critical bug)', () => {
+    let c = createCircuit()
+
+    c = addGate(c, 'inA', 'INPUT', 1, { x: 0, y: 0 })
+    c = addGate(c, 'inB', 'INPUT', 1, { x: 0, y: 100 })
+    c = addGate(c, 'and1', 'AND', 2, { x: 100, y: 0 })
+    c = addGate(c, 'and2', 'AND', 2, { x: 100, y: 100 })
+    c = addGate(c, 'and3', 'AND', 2, { x: 200, y: 50 })
+    c = addGate(c, 'out1', 'OUTPUT', 1, { x: 300, y: 50 })
+
+    c = connectGates(c, 'inA', 'and1', 0)
+    c = connectGates(c, 'inA', 'and2', 0)
+    c = connectGates(c, 'inB', 'and1', 1)
+    c = connectGates(c, 'inB', 'and2', 1)
+    c = connectGates(c, 'and1', 'and3', 0)
+    c = connectGates(c, 'and2', 'and3', 1)
+    c = connectGates(c, 'and3', 'out1', 0)
+
+    c = setInputValue(c, 'inA', 1)
+    c = setInputValue(c, 'inB', 1)
+
+    expect(getGateOutput(c, 'and1')).toBe(1)
+    expect(getGateOutput(c, 'and2')).toBe(1)
+    expect(getGateOutput(c, 'and3')).toBe(1)
+    expect(getGateOutput(c, 'out1')).toBe(1)
+
+    c = setInputValue(c, 'inA', 0)
+    expect(getGateOutput(c, 'and3')).toBe(0)
+    expect(getGateOutput(c, 'out1')).toBe(0)
+  })
+
+  it('catches oscillating feedback loops without crashing', () => {
+    let c = createCircuit()
+
+    c = addGate(c, 'in1', 'INPUT', 1, { x: 0, y: 0 })
+    c = addGate(c, 'not1', 'NOT', 1, { x: 100, y: 0 })
+
+    c = connectGates(c, 'in1', 'not1', 0)
+    c = connectGates(c, 'not1', 'not1', 0)
+
+    expect(() => setInputValue(c, 'in1', 1)).not.toThrow()
+  })
+
+  it('resets all inputs to 0 and clears outputs', () => {
+    let c = createCircuit()
+
+    c = addGate(c, 'in1', 'INPUT', 1, { x: 0, y: 0 })
+    c = addGate(c, 'in2', 'INPUT', 1, { x: 0, y: 100 })
+    c = addGate(c, 'and1', 'AND', 2, { x: 100, y: 0 })
+    c = addGate(c, 'out1', 'OUTPUT', 1, { x: 200, y: 0 })
+
+    c = connectGates(c, 'in1', 'and1', 0)
+    c = connectGates(c, 'in2', 'and1', 1)
+    c = connectGates(c, 'and1', 'out1', 0)
+
+    c = setInputValue(c, 'in1', 1)
+    c = setInputValue(c, 'in2', 1)
+    expect(getGateOutput(c, 'out1')).toBe(1)
+
+    c = resetCircuit(c)
+    expect(getGateOutput(c, 'out1')).toBe(0)
+    expect(getGateOutput(c, 'in1')).toBe(0)
+    expect(getGateOutput(c, 'in2')).toBe(0)
+  })
+})
