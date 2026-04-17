@@ -157,10 +157,11 @@ export const useCircuitStore = create((set, get) => ({
    */
   connectGatesAction: (fromGateId, toGateId, toInputIndex) => {
     const { circuit } = get()
-    const updatedCircuit = connectGates(circuit, fromGateId, toGateId, toInputIndex)
+    const updatedCircuit = { ...circuit }
+    connectGates(updatedCircuit, fromGateId, toGateId, toInputIndex)
     const { nodes, edges } = syncReactFlow(updatedCircuit)
     set({ circuit: updatedCircuit, nodes, edges })
-  },
+},
 
   //    Disconnect Gates Action 
   /**
@@ -171,7 +172,8 @@ export const useCircuitStore = create((set, get) => ({
    */
   disconnectGatesAction: (fromGateId, toGateId, toInputIndex) => {
     const { circuit } = get()
-    const updatedCircuit = disconnectGates(circuit, fromGateId, toGateId, toInputIndex)
+    const updatedCircuit = { ...circuit }
+    disconnectGates(updatedCircuit, fromGateId, toGateId, toInputIndex)
     const { nodes, edges } = syncReactFlow(updatedCircuit)
     set({ circuit: updatedCircuit, nodes, edges })
   },
@@ -182,7 +184,8 @@ export const useCircuitStore = create((set, get) => ({
    */
   toggleInputAction: (gateId) => {
     const { circuit } = get()
-    const updatedCircuit = toggleInput(circuit, gateId)
+    const updatedCircuit = { ...circuit } 
+    toggleInput(updatedCircuit, gateId)
     const { nodes, edges } = syncReactFlow(updatedCircuit)
     set({ circuit: updatedCircuit, nodes, edges })
   },
@@ -194,7 +197,8 @@ export const useCircuitStore = create((set, get) => ({
    */
   setInputValueAction: (gateId, value) => {
     const { circuit } = get()
-    const updatedCircuit = setInputValue(circuit, gateId, value)
+    const updatedCircuit = { ...circuit }
+    setInputValue(updatedCircuit, gateId, value)
     const { nodes, edges } = syncReactFlow(updatedCircuit)
     set({ circuit: updatedCircuit, nodes, edges })
   },
@@ -206,7 +210,8 @@ export const useCircuitStore = create((set, get) => ({
    */
   resetCircuitAction: () => {
     const { circuit } = get()
-    const updatedCircuit = resetCircuit(circuit)
+    const updatedCircuit = { ...circuit }
+    resetCircuit(updatedCircuit)
     const { nodes, edges } = syncReactFlow(updatedCircuit)
     set({ circuit: updatedCircuit, nodes, edges })
   },
@@ -225,7 +230,8 @@ export const useCircuitStore = create((set, get) => ({
   //    Run Simulation Action 
   runSimulationAction: () => {
     const { circuit } = get()
-    const updatedCircuit = runSimulation(circuit)
+    const updatedCircuit = { ...circuit }
+    runSimulation(updatedCircuit)
     const { nodes, edges } = syncReactFlow(updatedCircuit)
     set({ circuit: updatedCircuit, nodes, edges, isSimulating: true })
   },
