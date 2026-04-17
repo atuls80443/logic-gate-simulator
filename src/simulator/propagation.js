@@ -36,16 +36,14 @@ export function propagate(circuit, startGateId) {
   const gateMap = buildGateMap(updatedGates)
 
   const queue = [startGateId]
-  const visited = new Set()
+  const pending = new Set([startGateId])
   let iterations = 0
 
   while (queue.length > 0 && iterations < MAX_ITERATIONS) {
     iterations++
 
     const currentGateId = queue.shift()
-
-    if (visited.has(currentGateId)) continue
-    visited.add(currentGateId)
+    pending.delete(currentGateId)
 
     // O(1) lookup — no array scanning
     const currentGate = gateMap.get(currentGateId)
@@ -66,8 +64,9 @@ export function propagate(circuit, startGateId) {
         if (targetGate) {
           targetGate.inputs[connection.inputIndex] = newOutput
 
-          if (!visited.has(connection.gateId)) {
+          if (!pending.has(connection.gateId)) {
             queue.push(connection.gateId)
+            pending.add(connection.gateId)
           }
         }
       })
