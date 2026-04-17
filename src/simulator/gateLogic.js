@@ -58,6 +58,11 @@ export function INPUT(inputs) {
   return inputs[0] === 1 ? 1 : 0
 }
 
+//      OUTPUT Node
+export function OUTPUT(inputs) {
+  return inputs[0] === 1 ? 1 : 0
+}
+
 //      Gate Evaluator 
 // Central dispatcher: takes a gate type string and evaluates it
 // This is what the simulation engine will call
@@ -71,6 +76,7 @@ export function evaluateGate(type, inputs) {
     case 'XOR':   return XOR(inputs)
     case 'XNOR':  return XNOR(inputs)
     case 'INPUT': return INPUT(inputs)
+    case 'OUTPUT': return OUTPUT(inputs)
     default:
       console.warn(`Unknown gate type: ${type}`)
       return 0
