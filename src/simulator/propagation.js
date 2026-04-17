@@ -5,9 +5,7 @@
  * LOOKUP STRATEGY: Map.get() — O(1) per lookup.
  */
 
-// Import constants.js
 import { GATE_TYPES } from '../utils/constants'
-
 import { evaluateGate } from './gateLogic'
 
 const MAX_ITERATIONS = 1000
@@ -25,15 +23,13 @@ export function buildGateMap(gates) {
 
 /**
  * Propagates signal changes through the circuit using BFS.
+ * Mutates the circuit in-place for performance.
  * @param {Object} circuit - The current circuit state
  * @param {string} startGateId - ID of the gate whose output just changed
- * @returns {Object} - Updated circuit state with new output values
+ * @returns {Object} - The same circuit object, mutated
  */
 export function propagate(circuit, startGateId) {
-  const updatedGates = deepCopyGates(circuit.gates)
-
-  // Build Map ONCE — O(n). All lookups inside the loop are O(1)
-  const gateMap = buildGateMap(updatedGates)
+  const gateMap = buildGateMap(circuit.gates)
 
   const queue = [startGateId]
   const pending = new Set([startGateId])
@@ -45,7 +41,6 @@ export function propagate(circuit, startGateId) {
     const currentGateId = queue.shift()
     pending.delete(currentGateId)
 
-    // O(1) lookup — no array scanning
     const currentGate = gateMap.get(currentGateId)
     if (!currentGate) continue
 
@@ -58,7 +53,6 @@ export function propagate(circuit, startGateId) {
 
     if (shouldPropagate && currentGate.connectedTo?.length > 0) {
       currentGate.connectedTo.forEach(connection => {
-        // O(1) lookup — no array scanning
         const targetGate = gateMap.get(connection.gateId)
 
         if (targetGate) {
@@ -80,23 +74,20 @@ export function propagate(circuit, startGateId) {
     )
   }
 
-  return { ...circuit, gates: updatedGates }
+  return circuit
 }
 
 /**
  * Updates a specific gate's input value and triggers propagation.
- * This is the entry point called when a user toggles an INPUT node.
+ * Mutates the circuit in-place.
  * @param {Object} circuit - The current circuit state
  * @param {string} gateId - ID of the gate whose input changed
  * @param {number} inputIndex - Which input slot changed (0, 1, 2...)
  * @param {number} newValue - The new input value (0 or 1)
- * @returns {Object} - Updated circuit state after propagation
+ * @returns {Object} - The same circuit object, mutated
  */
 export function updateGateInput(circuit, gateId, inputIndex, newValue) {
-  const updatedGates = deepCopyGates(circuit.gates)
-
-  // Build Map for O(1) lookup
-  const gateMap = buildGateMap(updatedGates)
+  const gateMap = buildGateMap(circuit.gates)
   const targetGate = gateMap.get(gateId)
 
   if (!targetGate) {
@@ -106,8 +97,7 @@ export function updateGateInput(circuit, gateId, inputIndex, newValue) {
 
   targetGate.inputs[inputIndex] = newValue
 
-  const updatedCircuit = { ...circuit, gates: updatedGates }
-  return propagate(updatedCircuit, gateId)
+  return propagate(circuit, gateId)
 }
 
 /**
@@ -122,6 +112,7 @@ export function findGateById(gates, id) {
 
 /**
  * Creates a deep copy of the gates array.
+ * Kept for utility use (save/load, undo/redo) but NOT used in the hot path.
  * @param {Object[]} gates - Array of gate objects to copy
  * @returns {Object[]}
  */
@@ -138,17 +129,14 @@ export function deepCopyGates(gates) {
 /**
  * Evaluates every gate in the circuit from scratch.
  * Used when loading a saved circuit or resetting simulation.
+ * Mutates the circuit in-place.
  * @param {Object} circuit - The circuit state to evaluate
- * @returns {Object}
+ * @returns {Object} - The same circuit object, mutated
  */
 export function evaluateFullCircuit(circuit) {
-  const updatedGates = deepCopyGates(circuit.gates)
-  const inputNodes = updatedGates.filter(gate => gate.type === GATE_TYPES.INPUT)
-  let currentCircuit = { ...circuit, gates: updatedGates }
-
+  const inputNodes = circuit.gates.filter(gate => gate.type === GATE_TYPES.INPUT)
   inputNodes.forEach(inputNode => {
-    currentCircuit = propagate(currentCircuit, inputNode.id)
+    propagate(circuit, inputNode.id)
   })
-
-  return currentCircuit
+  return circuit
 }
