@@ -644,6 +644,114 @@ export function createDLatchTemplate() {
   }
 }
 
+// ─── JK Latch Template ─────────────────────────────────────────────────────
+/**
+ * WHY JK LATCH TEMPLATE:
+ * Extension of SR latch with feedback.
+ * Eliminates invalid state of SR latch.
+ * Demonstrates toggle behavior when J=K=1.
+ */
+export function createJKLatchTemplate() {
+  const inputJ   = generateUniqueGateId(GATE_TYPES.INPUT,  [])
+  const inputK   = generateUniqueGateId(GATE_TYPES.INPUT,  [])
+  const inputEn  = generateUniqueGateId(GATE_TYPES.INPUT,  []) // Enable / Clock
+
+  const nand1    = generateUniqueGateId(GATE_TYPES.NAND,   [])
+  const nand2    = generateUniqueGateId(GATE_TYPES.NAND,   [])
+  const nand3    = generateUniqueGateId(GATE_TYPES.NAND,   [])
+  const nand4    = generateUniqueGateId(GATE_TYPES.NAND,   [])
+
+  const outQ     = generateUniqueGateId(GATE_TYPES.OUTPUT, [])
+  const outQBar  = generateUniqueGateId(GATE_TYPES.OUTPUT, [])
+
+  return {
+    name: 'JK Latch',
+    description: 'Level-sensitive JK latch. Toggle when J=K=1 and EN=1.',
+    gates: [
+      {
+        id: inputJ,
+        type: GATE_TYPES.INPUT,
+        inputs: [0], output: 0,
+        position: { x: 60, y: 120 },
+        connectedTo: [
+          { gateId: nand1, inputIndex: 0 }
+        ]
+      },
+      {
+        id: inputK,
+        type: GATE_TYPES.INPUT,
+        inputs: [0], output: 0,
+        position: { x: 60, y: 320 },
+        connectedTo: [
+          { gateId: nand2, inputIndex: 0 }
+        ]
+      },
+      {
+        id: inputEn,
+        type: GATE_TYPES.INPUT,
+        inputs: [0], output: 0,
+        position: { x: 60, y: 220 },
+        connectedTo: [
+          { gateId: nand1, inputIndex: 1 },
+          { gateId: nand2, inputIndex: 1 },
+        ]
+      },
+      {
+        id: nand1,
+        type: GATE_TYPES.NAND,
+        inputs: [0, 0], output: 1,
+        position: { x: 250, y: 120 },
+        connectedTo: [
+          { gateId: nand3, inputIndex: 0 },
+        ]
+      },
+      {
+        id: nand2,
+        type: GATE_TYPES.NAND,
+        inputs: [0, 0], output: 1,
+        position: { x: 250, y: 320 },
+        connectedTo: [
+          { gateId: nand4, inputIndex: 1 },
+        ]
+      },
+      {
+        id: nand3,
+        type: GATE_TYPES.NAND,
+        inputs: [0, 0], output: 1,
+        position: { x: 450, y: 100 },
+        connectedTo: [
+          { gateId: outQ,   inputIndex: 0 },
+          { gateId: nand4,  inputIndex: 0 },
+        ]
+      },
+      {
+        id: nand4,
+        type: GATE_TYPES.NAND,
+        inputs: [0, 0], output: 1,
+        position: { x: 450, y: 300 },
+        connectedTo: [
+          { gateId: outQBar, inputIndex: 0 },
+          { gateId: nand3,   inputIndex: 1 },
+        ]
+      },
+      {
+        id: outQ,
+        type: GATE_TYPES.OUTPUT,
+        inputs: [0], output: 0,
+        position: { x: 650, y: 100 },
+        connectedTo: []
+      },
+      {
+        id: outQBar,
+        type: GATE_TYPES.OUTPUT,
+        inputs: [0], output: 0,
+        position: { x: 650, y: 300 },
+        connectedTo: []
+      },
+    ]
+  }
+}
+
 //    Template Registry 
 
 export const CIRCUIT_TEMPLATES = [
@@ -676,5 +784,10 @@ export const CIRCUIT_TEMPLATES = [
     id:     'd-latch',
     name:   'D Latch',
     create: createDLatchTemplate,
+  },
+  {
+    id:     'jk-latch',
+    name:   'JK Latch',
+    create: createJKLatchTemplate,
   },
 ]
