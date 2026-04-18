@@ -54,6 +54,7 @@ npm run test
 - [X] Phase 3: Canvas, wiring, and signal propagation
 - [X] Phase 4: Combinational circuits
 - [X] Phase 5: Sequential circuits
+- [ ] Phase 6: Truth Table Generator and Verilog Export
 
 ## License
 MIT
