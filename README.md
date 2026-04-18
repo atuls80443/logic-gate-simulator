@@ -3,16 +3,12 @@
 > A web-based digital circuit simulator for designing and simulating
 > digital logic circuits in real time.
 
-## 🚀 Live Demo
-*Coming soon*
-
 ## Features
 - 7 basic logic gates: AND, OR, NOT, NAND, NOR, XOR, XNOR
 - Drag-and-drop circuit building on an interactive canvas
 - Real-time event-driven signal propagation
 - Combinational circuits: Half Adder, Full Adder, MUX, Decoder
-- Sequential circuits: SR Latch, D Flip-Flop, 4-bit Counter
-- Save and load circuits as JSON
+- Sequential circuits: SR Latch, JK Latch, D Latch
 
 ## Tech Stack
 | Layer | Technology |
@@ -57,8 +53,7 @@ npm run test
 - [X] Phase 2: Simulation engine and gate logic
 - [X] Phase 3: Canvas, wiring, and signal propagation
 - [X] Phase 4: Combinational circuits
-- [ ] Phase 5: Sequential circuits
-- [ ] Phase 6: Save/load and polish
+- [X] Phase 5: Sequential circuits
 
 ## License
 MIT
