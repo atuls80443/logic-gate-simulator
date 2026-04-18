@@ -66,7 +66,7 @@ export function OUTPUT(inputs) {
 //      Gate Evaluator 
 // Central dispatcher: takes a gate type string and evaluates it
 // This is what the simulation engine will call
-export function evaluateGate(type, inputs) {
+export function evaluateGate(type, inputs, state = null) { 
   switch (type) {
     case 'AND':   return AND(inputs)
     case 'OR':    return OR(inputs)

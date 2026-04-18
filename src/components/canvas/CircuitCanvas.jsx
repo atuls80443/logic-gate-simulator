@@ -28,7 +28,7 @@ import { CANVAS } from '../../utils/constants'
 const nodeTypes = {
   gateNode:   GateNode,    
   inputNode:  InputNode,   
-  outputNode: OutputNode,  
+  outputNode: OutputNode, 
 }
 
 const edgeTypes = {

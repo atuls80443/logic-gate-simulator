@@ -537,18 +537,17 @@ export function createSRLatchTemplate() {
   }
 }
 
-// ─── D Flip-Flop Template ─────────────────────────────────────────────────────
+// ─── D Latch Template ─────────────────────────────────────────────────────
 /**
- * WHY D FLIP-FLOP TEMPLATE:
- * Shows edge-triggered memory behavior.
+ * WHY D LATCH TEMPLATE:
+ * Shows level-sensitive memory behavior.
  * Most important circuit in digital design.
- * Users can toggle D and CLK to see edge-triggered capture.
+ * Users can toggle D and CLK to see level-sensitive capture.
  */
-export function createDFlipFlopTemplate() {
+export function createDLatchTemplate() {
   const inputD   = generateUniqueGateId(GATE_TYPES.INPUT,  [])
   const inputClk = generateUniqueGateId(GATE_TYPES.INPUT,  [])
   const notD     = generateUniqueGateId(GATE_TYPES.NOT,    [])
-  const notClk   = generateUniqueGateId(GATE_TYPES.NOT,    [])
   const nand1    = generateUniqueGateId(GATE_TYPES.NAND,   [])
   const nand2    = generateUniqueGateId(GATE_TYPES.NAND,   [])
   const nand3    = generateUniqueGateId(GATE_TYPES.NAND,   [])
@@ -557,8 +556,8 @@ export function createDFlipFlopTemplate() {
   const outQBar  = generateUniqueGateId(GATE_TYPES.OUTPUT, [])
 
   return {
-    name: 'D Flip-Flop',
-    description: 'Edge-triggered memory. Q captures D only on CLK rising edge.',
+    name: 'D Latch',
+    description: 'Level-sensitive memory. Q follows D when CLK=1; holds when CLK=0.',
     gates: [
       {
         id: inputD,
@@ -576,26 +575,18 @@ export function createDFlipFlopTemplate() {
         inputs: [0], output: 0,
         position: { x: 60, y: 280 },
         connectedTo: [
-          { gateId: notClk, inputIndex: 0 },
-          { gateId: nand1,  inputIndex: 1 },
-          { gateId: nand2,  inputIndex: 1 },
+          { gateId: nand1, inputIndex: 1 },
+          { gateId: nand2, inputIndex: 1 },
         ]
       },
       {
         id: notD,
         type: GATE_TYPES.NOT,
-        inputs: [0], output: 0,
+        inputs: [0], output: 1,
         position: { x: 200, y: 340 },
         connectedTo: [
           { gateId: nand2, inputIndex: 0 }
         ]
-      },
-      {
-        id: notClk,
-        type: GATE_TYPES.NOT,
-        inputs: [0], output: 0,
-        position: { x: 200, y: 460 },
-        connectedTo: []
       },
       {
         id: nand1,
@@ -604,7 +595,6 @@ export function createDFlipFlopTemplate() {
         position: { x: 340, y: 140 },
         connectedTo: [
           { gateId: nand3, inputIndex: 0 },
-          { gateId: nand2, inputIndex: 1 },
         ]
       },
       {
@@ -614,7 +604,6 @@ export function createDFlipFlopTemplate() {
         position: { x: 340, y: 320 },
         connectedTo: [
           { gateId: nand4, inputIndex: 1 },
-          { gateId: nand1, inputIndex: 1 },
         ]
       },
       {
@@ -684,8 +673,8 @@ export const CIRCUIT_TEMPLATES = [
     create: createSRLatchTemplate,
   },
   {
-    id:     'd-flip-flop',
-    name:   'D Flip-Flop',
-    create: createDFlipFlopTemplate,
+    id:     'd-latch',
+    name:   'D Latch',
+    create: createDLatchTemplate,
   },
 ]
